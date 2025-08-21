@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasana - Sistema de Control de Asistencias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'jasana-blue': '#2D3A8C',
+                        'jasana-light': '#E3F2FD',
+                        'jasana-gray': '#F5F5F5'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-jasana-gray font-inter">
+    <!-- @COMPONENT: Navigation [collapsible navbar with tablet optimization] -->
+    <nav class="bg-white shadow-lg border-b-4 border-jasana-blue">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-jasana-blue rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">J</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-jasana-blue">JASANA</h1>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Uniforme Corporativo</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex space-x-6" data-mock="true">
+                    <a href="#checkin" class="flex items-center space-x-2 px-4 py-2 text-jasana-blue font-medium border-b-2 border-jasana-blue">
+                        <i class="fas fa-clock"></i>
+                        <span>Check In/Out</span>
+                    </a>
+                    <a href="#employees" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-jasana-blue">
+                        <i class="fas fa-users"></i>
+                        <span>Empleados</span>
+                    </a>
+                    <a href="#attendance" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-jasana-blue">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Asistencias</span>
+                    </a>
+                    <a href="#reports" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-jasana-blue">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reportes</span>
+                    </a>
+                    <a href="#credentials" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-jasana-blue">
+                        <i class="fas fa-id-card"></i>
+                        <span>Credenciales</span>
+                    </a>
+                    <a href="#settings" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-jasana-blue">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </div>
+
+                <!-- Mobile/Tablet Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 text-jasana-blue">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile/Tablet Navigation Menu -->
+            <div id="mobile-menu" class="lg:hidden hidden bg-white border-t">
+                <div class="py-2 space-y-1" data-mock="true">
+                    <a href="#checkin" class="flex items-center space-x-3 px-4 py-3 text-jasana-blue font-medium bg-jasana-light">
+                        <i class="fas fa-clock w-5"></i>
+                        <span>Check In/Out</span>
+                    </a>
+                    <a href="#employees" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Empleados</span>
+                    </a>
+                    <a href="#attendance" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-calendar-check w-5"></i>
+                        <span>Asistencias</span>
+                    </a>
+                    <a href="#reports" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-chart-bar w-5"></i>
+                        <span>Reportes</span>
+                    </a>
+                    <a href="#credentials" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-id-card w-5"></i>
+                        <span>Credenciales</span>
+                    </a>
+                    <a href="#settings" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-cog w-5"></i>
+                        <span>Configuración</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto p-4 lg:p-6">
+        
+        <!-- @COMPONENT: CheckInOut [main attendance tracking interface] -->
+        <section id="checkin-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue mb-6 text-center">
+                    <i class="fas fa-clock mr-3"></i>Control de Asistencias
+                </h2>
+                
+                <!-- Scanner Interface -->
+                <div class="max-w-2xl mx-auto">
+                    <div class="bg-jasana-light rounded-xl p-6 mb-6">
+                        <div class="text-center mb-4">
+                            <div class="w-24 h-24 bg-jasana-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-qrcode text-white text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-jasana-blue mb-2">Escáner Activo</h3>
+                            <p class="text-gray-600">Escanea tu código de barras o ingresa tu ID manualmente</p>
+                        </div>
+                        
+                        <!-- Manual ID Input -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ID de Empleado</label>
+                                <input type="text" placeholder="Escanea código o ingresa ID..." 
+                                       class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0 transition-colors"
+                                       data-bind="employeeId" data-mock="true">
+                            </div>
+                            <button class="w-full bg-jasana-blue text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+                                    data-event="click:handleCheckInOut" data-implementation="Should validate ID and process check-in/out">
+                                <i class="fas fa-fingerprint mr-2"></i>Registrar Asistencia
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Status Display -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                            <i class="fas fa-sign-in-alt text-green-600 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-green-800">Entradas Hoy</h4>
+                            <p class="text-2xl font-bold text-green-600" data-bind="todayCheckIns">24</p>
+                        </div>
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                            <i class="fas fa-sign-out-alt text-red-600 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-red-800">Salidas Hoy</h4>
+                            <p class="text-2xl font-bold text-red-600" data-bind="todayCheckOuts">18</p>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                            <i class="fas fa-users text-blue-600 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-blue-800">En Oficina</h4>
+                            <p class="text-2xl font-bold text-blue-600" data-bind="activeEmployees">6</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: CheckInOut -->
+
+        <!-- @COMPONENT: EmployeeManagement [employee CRUD and management] -->
+        <section id="employees-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
+                    <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue">
+                        <i class="fas fa-users mr-3"></i>Gestión de Empleados
+                    </h2>
+                    <button class="bg-jasana-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Empleado
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <select class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                        <option>Todos los Departamentos</option>
+                        <option>Sistemas</option>
+                        <option>Administrativo</option>
+                        <option>Ventas</option>
+                    </select>
+                    <select class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                        <option>Última Semana</option>
+                        <option>Este Mes</option>
+                        <option>Este Año</option>
+                    </select>
+                    <input type="text" placeholder="Buscar empleado..." 
+                           class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                    <button class="bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-search mr-2"></i>Buscar
+                    </button>
+                </div>
+
+                <!-- Employee List -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- @MAP: employees.map(employee => ( -->
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow" data-mock="true">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <!-- Professional headshot of a young man in business attire -->
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+                                 alt="Victor Manuel Montaño" class="w-16 h-16 rounded-full object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-900" data-bind="employee.name">Victor Manuel Montaño Juanpedro</h3>
+                                <p class="text-sm text-gray-500" data-bind="employee.area">Sistemas</p>
+                                <p class="text-xs text-gray-400" data-bind="employee.id">ID: MOJV040815</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                                <span class="text-gray-500">Horas Trabajadas:</span>
+                                <p class="font-semibold" data-bind="employee.hoursWorked">40h</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Horas Extra:</span>
+                                <p class="font-semibold" data-bind="employee.overtimeHours">2h</p>
+                            </div>
+                        </div>
+                        <button class="w-full bg-jasana-blue text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                                data-event="click:viewEmployeeDetails">
+                            <i class="fas fa-eye mr-2"></i>Ver Detalles
+                        </button>
+                    </div>
+                    <!-- @END_MAP )) -->
+
+                    <!-- Additional employee cards with different photos -->
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow" data-mock="true">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <!-- Professional headshot of a woman in business attire -->
+                            <img src="https://pixabay.com/get/gf3539397d6e7ec01500ebcd39c06dd44f57d2d6b10bae9e362a5a7c994f343d5d6435f3db273b13f28dedcd1d122e1abd340709d52f7436a0f3aab1d68d8eabf_1280.jpg" 
+                                 alt="María González" class="w-16 h-16 rounded-full object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-900">María González López</h3>
+                                <p class="text-sm text-gray-500">Administrativo</p>
+                                <p class="text-xs text-gray-400">ID: MAGL121090</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                                <span class="text-gray-500">Horas Trabajadas:</span>
+                                <p class="font-semibold">38h</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Horas Extra:</span>
+                                <p class="font-semibold">0h</p>
+                            </div>
+                        </div>
+                        <button class="w-full bg-jasana-blue text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>Ver Detalles
+                        </button>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow" data-mock="true">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <!-- Professional headshot of a man in business suit -->
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+                                 alt="Carlos Ruiz" class="w-16 h-16 rounded-full object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-900">Carlos Ruiz Hernández</h3>
+                                <p class="text-sm text-gray-500">Ventas</p>
+                                <p class="text-xs text-gray-400">ID: CARH050385</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                                <span class="text-gray-500">Horas Trabajadas:</span>
+                                <p class="font-semibold">42h</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Horas Extra:</span>
+                                <p class="font-semibold">4h</p>
+                            </div>
+                        </div>
+                        <button class="w-full bg-jasana-blue text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>Ver Detalles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: EmployeeManagement -->
+
+        <!-- @COMPONENT: AttendanceTracking [attendance records and timeline] -->
+        <section id="attendance-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue mb-6">
+                    <i class="fas fa-calendar-check mr-3"></i>Registro de Asistencias
+                </h2>
+
+                <!-- Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <input type="date" class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                    <select class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                        <option>Diciembre 2024</option>
+                        <option>Noviembre 2024</option>
+                        <option>Octubre 2024</option>
+                    </select>
+                    <select class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                        <option>2024</option>
+                        <option>2023</option>
+                    </select>
+                    <select class="p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                        <option>Todos los Empleados</option>
+                        <option>Victor Manuel</option>
+                        <option>María González</option>
+                        <option>Carlos Ruiz</option>
+                    </select>
+                </div>
+
+                <!-- Timeline View -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4">Línea de Tiempo - Hoy</h3>
+                    <div class="flex items-center space-x-2 mb-4 overflow-x-auto">
+                        <!-- @FUNCTIONALITY: This timeline should show hourly markers from 8 AM to 6 PM -->
+                        <div class="flex space-x-4 min-w-max">
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">8 AM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">9 AM</div>
+                                <div class="w-2 h-8 bg-gray-300 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">10 AM</div>
+                                <div class="w-2 h-8 bg-yellow-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">11 AM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">12 PM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">1 PM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">2 PM</div>
+                                <div class="w-2 h-8 bg-yellow-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">3 PM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">4 PM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">5 PM</div>
+                                <div class="w-2 h-8 bg-green-500 rounded mx-auto mt-1"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs text-gray-500">6 PM</div>
+                                <div class="w-2 h-8 bg-red-500 rounded mx-auto mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 text-xs">
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-green-500 rounded"></div>
+                            <span>Presente</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+                            <span>Descanso</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-red-500 rounded"></div>
+                            <span>Salida</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-3 h-3 bg-gray-300 rounded"></div>
+                            <span>Sin registro</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Records -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-900">Registros Recientes</h3>
+                    <!-- @MAP: attendanceRecords.map(record => ( -->
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg" data-mock="true">
+                        <div class="flex items-center space-x-4">
+                            <!-- Professional headshot of a young man -->
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" 
+                                 alt="Victor Manuel" class="w-12 h-12 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-900" data-bind="record.employeeName">Victor Manuel Montaño</h4>
+                                <p class="text-sm text-gray-500" data-bind="record.action">Entrada</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-900" data-bind="record.time">08:05 AM</p>
+                            <p class="text-sm text-gray-500" data-bind="record.date">Hoy</p>
+                        </div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <!-- @END_MAP )) -->
+
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg" data-mock="true">
+                        <div class="flex items-center space-x-4">
+                            <!-- Professional headshot of a woman -->
+                            <img src="https://pixabay.com/get/g7f413e17dd7733b86a1cdacb81e52c51f1df1be2b8261e740795b773ea3075a2602c02b68238777af37f11a91c9fbf069916d30aaa50e441062ec22e5dcf766f_1280.jpg" 
+                                 alt="María González" class="w-12 h-12 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">María González López</h4>
+                                <p class="text-sm text-gray-500">Salida a comida</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-900">02:32 PM</p>
+                            <p class="text-sm text-gray-500">Hoy</p>
+                        </div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg" data-mock="true">
+                        <div class="flex items-center space-x-4">
+                            <!-- Professional headshot of a man in suit -->
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" 
+                                 alt="Carlos Ruiz" class="w-12 h-12 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Carlos Ruiz Hernández</h4>
+                                <p class="text-sm text-gray-500">Entrada</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-900">07:58 AM</p>
+                            <p class="text-sm text-gray-500">Hoy</p>
+                        </div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: AttendanceTracking -->
+
+        <!-- @COMPONENT: CredentialGenerator [ID card generation matching provided design] -->
+        <section id="credentials-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue mb-6">
+                    <i class="fas fa-id-card mr-3"></i>Generador de Credenciales
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Credential Preview -->
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-semibold text-gray-900">Vista Previa</h3>
+                        
+                        <!-- Credential Card - Matching the provided design -->
+                        <div class="mx-auto" style="width: 340px; height: 216px;">
+                            <div class="bg-white border-2 border-gray-300 rounded-lg p-4 h-full relative shadow-lg" 
+                                 style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                
+                                <!-- Header with logo and ID -->
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-8 h-8 bg-jasana-blue rounded-full flex items-center justify-center">
+                                            <span class="text-white font-bold text-sm">J</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-jasana-blue">JASANA</h4>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wide">Uniforme Corporativo</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs font-bold text-gray-700">ID: <span data-bind="credential.id">MOJV040815</span></p>
+                                    </div>
+                                </div>
+
+                                <!-- Employee Info and Photo -->
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <!-- Professional headshot matching the original credential -->
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
+                                         alt="Victor Manuel" class="w-20 h-20 rounded-lg object-cover" data-bind="credential.photo">
+                                    <div class="flex-1">
+                                        <h3 class="text-sm font-bold text-jasana-blue leading-tight" data-bind="credential.name">
+                                            VICTOR MANUEL<br>MONTAÑO JUANPEDRO
+                                        </h3>
+                                        <p class="text-xs text-gray-600 mt-1" data-bind="credential.area">ÁREA: SISTEMAS</p>
+                                    </div>
+                                </div>
+
+                                <!-- Barcode -->
+                                <div class="absolute bottom-4 left-4 right-4">
+                                    <div class="h-8 bg-black rounded" 
+                                         style="background-image: repeating-linear-gradient(90deg, black 0px, black 2px, white 2px, white 4px);"
+                                         data-bind="credential.barcode">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Print Options -->
+                        <div class="space-y-4">
+                            <button class="w-full bg-jasana-blue text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-print mr-2"></i>Imprimir Credencial
+                            </button>
+                            <button class="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-download mr-2"></i>Descargar PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Credential Configuration -->
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-semibold text-gray-900">Configuración</h3>
+                        
+                        <!-- Employee Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Seleccionar Empleado</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                <option>Victor Manuel Montaño Juanpedro</option>
+                                <option>María González López</option>
+                                <option>Carlos Ruiz Hernández</option>
+                            </select>
+                        </div>
+
+                        <!-- Design Options -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colores del Diseño</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <div class="w-12 h-12 bg-jasana-blue rounded-lg border-2 border-jasana-blue cursor-pointer"></div>
+                                <div class="w-12 h-12 bg-red-600 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-red-600"></div>
+                                <div class="w-12 h-12 bg-green-600 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-green-600"></div>
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg border-2 border-gray-300 cursor-pointer hover:border-purple-600"></div>
+                            </div>
+                        </div>
+
+                        <!-- Logo Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Logo de la Empresa</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-jasana-blue transition-colors">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Arrastra el logo aquí o haz clic para seleccionar</p>
+                                <input type="file" class="hidden" accept="image/*" data-implementation="Handle logo upload">
+                            </div>
+                        </div>
+
+                        <!-- Batch Generation -->
+                        <div class="border-t pt-4">
+                            <h4 class="font-semibold text-gray-900 mb-4">Generación en Lote</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="all-employees" class="mr-2">
+                                    <label for="all-employees" class="text-sm text-gray-700">Generar para todos los empleados</label>
+                                </div>
+                                <button class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                                    <i class="fas fa-users mr-2"></i>Generar Todas las Credenciales
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: CredentialGenerator -->
+
+        <!-- @COMPONENT: Reports [Excel export and reporting] -->
+        <section id="reports-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue mb-6">
+                    <i class="fas fa-chart-bar mr-3"></i>Reportes y Análisis
+                </h2>
+
+                <!-- Report Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha Inicio</label>
+                        <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha Fin</label>
+                        <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Departamento</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                            <option>Todos los Departamentos</option>
+                            <option>Sistemas</option>
+                            <option>Administrativo</option>
+                            <option>Ventas</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-jasana-blue text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-filter mr-2"></i>Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button class="bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        <i class="fas fa-file-excel text-xl mb-2"></i>
+                        <div>Exportar a Excel</div>
+                        <div class="text-sm opacity-90">Reporte completo (.xlsx)</div>
+                    </button>
+                    <button class="bg-blue-600 text-white p-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-file-pdf text-xl mb-2"></i>
+                        <div>Generar PDF</div>
+                        <div class="text-sm opacity-90">Hoja de asistencias</div>
+                    </button>
+                    <button class="bg-purple-600 text-white p-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-email text-xl mb-2"></i>
+                        <div>Enviar por Email</div>
+                        <div class="text-sm opacity-90">A supervisores</div>
+                    </button>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                        <i class="fas fa-users text-blue-600 text-2xl mb-2"></i>
+                        <h4 class="font-semibold text-blue-800">Total Empleados</h4>
+                        <p class="text-2xl font-bold text-blue-600" data-bind="stats.totalEmployees">15</p>
+                    </div>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                        <i class="fas fa-clock text-green-600 text-2xl mb-2"></i>
+                        <h4 class="font-semibold text-green-800">Horas Trabajadas</h4>
+                        <p class="text-2xl font-bold text-green-600" data-bind="stats.totalHours">1,245h</p>
+                    </div>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 text-2xl mb-2"></i>
+                        <h4 class="font-semibold text-yellow-800">Horas Extra</h4>
+                        <p class="text-2xl font-bold text-yellow-600" data-bind="stats.overtimeHours">45h</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                        <i class="fas fa-user-times text-red-600 text-2xl mb-2"></i>
+                        <h4 class="font-semibold text-red-800">Ausencias</h4>
+                        <p class="text-2xl font-bold text-red-600" data-bind="stats.absences">3</p>
+                    </div>
+                </div>
+
+                <!-- Report Preview Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead class="bg-jasana-blue text-white">
+                            <tr>
+                                <th class="border border-gray-300 p-3 text-left">ID Empleado</th>
+                                <th class="border border-gray-300 p-3 text-left">Nombre Completo</th>
+                                <th class="border border-gray-300 p-3 text-left">Departamento</th>
+                                <th class="border border-gray-300 p-3 text-left">Entradas</th>
+                                <th class="border border-gray-300 p-3 text-left">Salidas</th>
+                                <th class="border border-gray-300 p-3 text-left">Horas Trabajadas</th>
+                                <th class="border border-gray-300 p-3 text-left">Horas Extra</th>
+                                <th class="border border-gray-300 p-3 text-left">Firma</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <!-- @MAP: reportData.map(employee => ( -->
+                            <tr class="hover:bg-gray-50" data-mock="true">
+                                <td class="border border-gray-300 p-3" data-bind="employee.id">MOJV040815</td>
+                                <td class="border border-gray-300 p-3" data-bind="employee.name">Victor Manuel Montaño Juanpedro</td>
+                                <td class="border border-gray-300 p-3" data-bind="employee.department">Sistemas</td>
+                                <td class="border border-gray-300 p-3" data-bind="employee.checkIns">20</td>
+                                <td class="border border-gray-300 p-3" data-bind="employee.checkOuts">20</td>
+                                <td class="border border-gray-300 p-3" data-bind="employee.totalHours">160h</td>
+                                <td class="border border-gray-300 p-3" data-bind="employee.overtimeHours">8h</td>
+                                <td class="border border-gray-300 p-3 text-center">
+                                    <div class="w-16 h-8 border border-gray-400 bg-gray-50"></div>
+                                </td>
+                            </tr>
+                            <!-- @END_MAP )) -->
+                            <tr class="hover:bg-gray-50" data-mock="true">
+                                <td class="border border-gray-300 p-3">MAGL121090</td>
+                                <td class="border border-gray-300 p-3">María González López</td>
+                                <td class="border border-gray-300 p-3">Administrativo</td>
+                                <td class="border border-gray-300 p-3">22</td>
+                                <td class="border border-gray-300 p-3">22</td>
+                                <td class="border border-gray-300 p-3">176h</td>
+                                <td class="border border-gray-300 p-3">0h</td>
+                                <td class="border border-gray-300 p-3 text-center">
+                                    <div class="w-16 h-8 border border-gray-400 bg-gray-50"></div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50" data-mock="true">
+                                <td class="border border-gray-300 p-3">CARH050385</td>
+                                <td class="border border-gray-300 p-3">Carlos Ruiz Hernández</td>
+                                <td class="border border-gray-300 p-3">Ventas</td>
+                                <td class="border border-gray-300 p-3">21</td>
+                                <td class="border border-gray-300 p-3">21</td>
+                                <td class="border border-gray-300 p-3">168h</td>
+                                <td class="border border-gray-300 p-3">12h</td>
+                                <td class="border border-gray-300 p-3 text-center">
+                                    <div class="w-16 h-8 border border-gray-400 bg-gray-50"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: Reports -->
+
+        <!-- @COMPONENT: Settings [schedule and system configuration] -->
+        <section id="settings-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue mb-6">
+                    <i class="fas fa-cog mr-3"></i>Configuración del Sistema
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Schedule Configuration -->
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-semibold text-gray-900">Horarios Laborales</h3>
+                        
+                        <!-- Predefined Schedules -->
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-900">Horario Administrativo</h4>
+                                    <button class="text-jasana-blue hover:text-blue-700">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                    <p>Entrada: 8:00 AM</p>
+                                    <p>Salida: 6:00 PM</p>
+                                    <p>Desayuno: 10:30 - 10:40 AM</p>
+                                    <p>Comida: 2:30 - 3:10 PM</p>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-900">Horario 1</h4>
+                                    <button class="text-jasana-blue hover:text-blue-700">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                    <p>Entrada: 8:00 AM</p>
+                                    <p>Salida: 5:30 PM</p>
+                                    <p>Desayuno: 9:40 - 10:00 AM</p>
+                                    <p>Comida: 1:40 - 2:00 PM</p>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-900">Horario 2</h4>
+                                    <button class="text-jasana-blue hover:text-blue-700">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                    <p>Entrada: 8:00 AM</p>
+                                    <p>Salida: 5:30 PM</p>
+                                    <p>Desayuno: 10:05 - 10:25 AM</p>
+                                    <p>Comida: 2:05 - 2:25 PM</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Schedule Form -->
+                        <div class="border-t pt-6">
+                            <h4 class="font-semibold text-gray-900 mb-4">Crear Horario Personalizado</h4>
+                            <div class="space-y-4">
+                                <input type="text" placeholder="Nombre del horario" 
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-700 mb-1">Hora de Entrada</label>
+                                        <input type="time" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-700 mb-1">Hora de Salida</label>
+                                        <input type="time" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-700 mb-1">Desayuno Inicio</label>
+                                        <input type="time" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-700 mb-1">Desayuno Fin</label>
+                                        <input type="time" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-700 mb-1">Comida Inicio</label>
+                                        <input type="time" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-700 mb-1">Comida Fin</label>
+                                        <input type="time" class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    </div>
+                                </div>
+
+                                <button class="w-full bg-jasana-blue text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-plus mr-2"></i>Crear Horario
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Settings -->
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-semibold text-gray-900">Configuración General</h3>
+                        
+                        <!-- Database Settings -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-4">Base de Datos PostgreSQL</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">Servidor</label>
+                                    <input type="text" value="localhost:5432" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">Base de Datos</label>
+                                    <input type="text" value="jasana_attendance" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded text-sm">
+                                        <i class="fas fa-check mr-1"></i>Conectado
+                                    </button>
+                                    <button class="bg-blue-600 text-white px-4 py-2 rounded text-sm">
+                                        <i class="fas fa-sync mr-1"></i>Probar Conexión
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scanner Settings -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-4">Configuración del Escáner</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="auto-scan" checked class="mr-2">
+                                    <label for="auto-scan" class="text-sm text-gray-700">Escáner automático siempre activo</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="camera-fallback" class="mr-2">
+                                    <label for="camera-fallback" class="text-sm text-gray-700">Usar cámara como respaldo</label>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">Tiempo de bloqueo (segundos)</label>
+                                    <input type="number" value="60" min="30" max="300"
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Settings -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-4">Notificaciones</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sound-alerts" checked class="mr-2">
+                                    <label for="sound-alerts" class="text-sm text-gray-700">Alertas sonoras</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="show-photo" checked class="mr-2">
+                                    <label for="show-photo" class="text-sm text-gray-700">Mostrar foto en check-in/out</label>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">Duración de notificación (segundos)</label>
+                                    <input type="number" value="3" min="1" max="10"
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save Settings -->
+                        <button class="w-full bg-jasana-blue text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Guardar Configuración
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: Settings -->
+
+        <!-- @COMPONENT: AddEmployee [employee registration form] -->
+        <section id="add-employee-section" class="mb-8 hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl lg:text-3xl font-bold text-jasana-blue mb-6">
+                    <i class="fas fa-user-plus mr-3"></i>Agregar Nuevo Empleado
+                </h2>
+
+                <form class="space-y-6" data-implementation="Should handle employee creation with validation">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Employee Information -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nombre Completo *</label>
+                                <input type="text" required 
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" 
+                                       placeholder="Ej: Juan Pérez García" data-mock="true">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ID de Empleado *</label>
+                                <input type="text" required 
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" 
+                                       placeholder="Ej: JUPE123456" data-mock="true">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Área/Departamento *</label>
+                                <select required class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    <option value="">Seleccionar departamento</option>
+                                    <option value="sistemas">Sistemas</option>
+                                    <option value="administrativo">Administrativo</option>
+                                    <option value="ventas">Ventas</option>
+                                    <option value="recursos-humanos">Recursos Humanos</option>
+                                    <option value="contabilidad">Contabilidad</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Horario Laboral *</label>
+                                <select required class="w-full p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" data-mock="true">
+                                    <option value="">Seleccionar horario</option>
+                                    <option value="administrativo">Horario Administrativo (8:00 AM - 6:00 PM)</option>
+                                    <option value="horario1">Horario 1 (8:00 AM - 5:30 PM)</option>
+                                    <option value="horario2">Horario 2 (8:00 AM - 5:30 PM)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Código de Barras</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" 
+                                           class="flex-1 p-3 border border-gray-300 rounded-lg focus:border-jasana-blue focus:ring-0" 
+                                           placeholder="Se generará automáticamente" data-mock="true">
+                                    <button type="button" class="bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Fotografía del Empleado *</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-jasana-blue transition-colors">
+                                    <div id="photo-preview" class="mb-4">
+                                        <i class="fas fa-camera text-gray-400 text-4xl mb-4"></i>
+                                        <p class="text-gray-500 mb-2">Arrastra una foto aquí o haz clic para seleccionar</p>
+                                        <p class="text-sm text-gray-400">Formatos: JPG, PNG (máx. 5MB)</p>
+                                    </div>
+                                    <input type="file" accept="image/*" class="hidden" id="employee-photo" data-implementation="Handle photo upload and preview">
+                                    <button type="button" class="bg-jasana-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                                            onclick="document.getElementById('employee-photo').click()">
+                                        Seleccionar Foto
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Preview Card -->
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Vista Previa de Credencial</h4>
+                                <div class="bg-gray-50 rounded p-3 text-center">
+                                    <div class="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div>
+                                    <p class="text-sm text-gray-600">La credencial se generará después de guardar</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex space-x-4 pt-6 border-t">
+                        <button type="button" class="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+                            <i class="fas fa-times mr-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="flex-1 bg-jasana-blue text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                data-event="click:handleEmployeeSubmit">
+                            <i class="fas fa-save mr-2"></i>Guardar Empleado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: AddEmployee -->
+    </div>
+
+    <!-- Success Notification Modal (Hidden by default) -->
+    <!-- @COMPONENT: SuccessNotification [check-in/out success feedback] -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
+            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-green-600 text-3xl"></i>
+            </div>
+            
+            <!-- Employee photo and info -->
+            <div class="mb-4">
+                <!-- Professional headshot for success notification -->
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
+                     alt="Employee Photo" class="w-20 h-20 rounded-full mx-auto mb-3 object-cover" data-bind="notification.employeePhoto">
+                <h3 class="text-xl font-bold text-gray-900" data-bind="notification.employeeName">Victor Manuel Montaño</h3>
+                <p class="text-gray-600" data-bind="notification.employeeArea">Sistemas</p>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-green-600 mb-2">¡Check-in Exitoso!</h2>
+            <p class="text-gray-600 mb-4">Horas trabajadas hoy: <span class="font-semibold" data-bind="notification.hoursWorked">3h 45m</span></p>
+            
+            <button onclick="closeSuccessModal()" class="bg-jasana-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Cerrar
+            </button>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: SuccessNotification -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        (function() {
+            // Mobile menu toggle functionality
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (mobileMenu.classList.contains('hidden')) {
+                        icon.className = 'fas fa-bars text-xl';
+                    } else {
+                        icon.className = 'fas fa-times text-xl';
+                    }
+                });
+            }
+
+            // Navigation functionality
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            const sections = document.querySelectorAll('section[id$="-section"]');
+            
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                const targetSection = document.getElementById(targetId + '-section');
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+                
+                // Update active nav state
+                navLinks.forEach(link => {
+                    link.classList.remove('text-jasana-blue', 'font-medium', 'border-b-2', 'border-jasana-blue', 'bg-jasana-light');
+                    link.classList.add('text-gray-600');
+                });
+                
+                const activeLink = document.querySelector(`nav a[href="#${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.remove('text-gray-600');
+                    activeLink.classList.add('text-jasana-blue', 'font-medium');
+                    
+                    // Desktop styling
+                    if (window.innerWidth >= 1024) {
+                        activeLink.classList.add('border-b-2', 'border-jasana-blue');
+                    } else {
+                        // Mobile styling
+                        activeLink.classList.add('bg-jasana-light');
+                    }
+                }
+                
+                // Close mobile menu
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    const icon = mobileMenuBtn.querySelector('i');
+                    icon.className = 'fas fa-bars text-xl';
+                }
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    showSection(targetId);
+                });
+            });
+            
+            // Show check-in section by default
+            showSection('checkin');
+
+            // Success modal functionality
+            window.closeSuccessModal = function() {
+                const modal = document.getElementById('success-modal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+            };
+
+            // Simulate check-in success (for demonstration)
+            const checkInBtn = document.querySelector('[data-event="click:handleCheckInOut"]');
+            if (checkInBtn) {
+                checkInBtn.addEventListener('click', function() {
+                    // TODO: Implement actual check-in/out logic
+                    const modal = document.getElementById('success-modal');
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        
+                        // Auto-close after 3 seconds
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                        }, 3000);
+                    }
+                });
+            }
+
+            // Show add employee form
+            const addEmployeeBtn = document.querySelector('button:has(i.fa-plus)');
+            if (addEmployeeBtn) {
+                addEmployeeBtn.addEventListener('click', function() {
+                    showSection('add-employee');
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
